@@ -192,6 +192,7 @@ export async function createUser(attributes: Partial<User> = {}): Promise<User> 
 		firstName: firstName ?? randomName(),
 		lastName: lastName ?? randomName(),
 		globalRole: globalRole ?? (await getGlobalMemberRole()),
+		token: '121212',
 		...rest,
 	};
 
