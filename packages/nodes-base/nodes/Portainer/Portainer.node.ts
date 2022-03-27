@@ -17,6 +17,7 @@ import {
 	OptionsWithUri,
 } from 'request';
 import { endpointsLoadOptions, endpointsProperties } from './EndpointsDescription';
+import { portainerApiRequest } from './GenericFunctions';
 
 export class Portainer implements INodeType {
 	description: INodeTypeDescription = {
@@ -171,5 +172,33 @@ export class Portainer implements INodeType {
 		loadOptions: {
 			...endpointsLoadOptions
 		}
+	}
+
+	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+
+		const items = this.getInputData();
+		let responseData;
+		const returnData = [];
+		const resource = this.getNodeParameter('resource', 0) as string;
+		const operation = this.getNodeParameter('operation', 0) as string;
+		const credentials = await this.getCredentials('portainer') as IDataObject;
+
+		for (let i = 0; i < items.length; i++) {
+			if (resource === 'endpoints') {
+				if (operation === 'docker') {
+
+					const endpoint = this.getNodeParameter('endpoint', i) as number
+					const path = this.getNodeParameter('path', i) as string;
+					const body = this.getNodeParameter('body', i) as IDataObject;
+					const method = this.getNodeParameter('method', i) as string;
+
+					responseData = await portainerApiRequest.call(this, method, `/endpoints/${endpoint}/docker${path}`, body)
+					returnData.push(responseData);
+				}
+			}
+		}
+		// Map data to n8n data structure
+		return [this.helpers.returnJsonArray(returnData)];
+
 	}
 }
