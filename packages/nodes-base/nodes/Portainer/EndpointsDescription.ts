@@ -47,18 +47,70 @@ export const endpointsProperties: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Password',
-		name: 'password',
-		type: 'hidden',
+		displayName: 'Method',
+		name: 'method',
+		type: 'options',
+		required: true,
+		default: 'GET',
+		options: [
+			{
+				name: 'GET',
+				value: 'GET'
+			},
+			{
+				name: 'POST',
+				value: 'POST'
+			},
+			{
+				name: 'PUT',
+				value: 'PUT'
+			},
+			{
+				name: 'DELETE',
+				value: 'DELETE'
+			},
+		],
+		displayOptions: {
+			show: {
+				resource: [
+					'endpoints',
+				],
+				operation: [
+					'docker',
+				],
+			},
+		},
+	},
+	{
+		displayName: 'Path',
+		name: 'path',
+		type: 'string',
 		required: true,
 		default: '',
 		displayOptions: {
 			show: {
 				resource: [
-					'auth',
+					'endpoints',
 				],
 				operation: [
-					'authenticate',
+					'docker',
+				],
+			},
+		},
+	},
+	{
+		displayName: 'Body',
+		name: 'body',
+		type: 'json',
+		required: true,
+		default: '',
+		displayOptions: {
+			show: {
+				resource: [
+					'endpoints',
+				],
+				operation: [
+					'docker',
 				],
 			},
 		},
@@ -68,7 +120,7 @@ export const endpointsProperties: INodeProperties[] = [
 export const endpointsLoadOptions: { [key: string]: (this: ILoadOptionsFunctions) => Promise<INodePropertyOptions[]>; } = {
 	async loadEndpoints(this) {
 		const options: INodePropertyOptions[] = [];
-		const endpoints: Endpoint[] = await portainerApiRequest.call(this, 'GET', 'endpoints');
+		const endpoints: Endpoint[] = await portainerApiRequest.call(this, 'GET', '/endpoints');
 		if (endpoints !== undefined) {
 			endpoints.forEach(value => {
 				options.push(

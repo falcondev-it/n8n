@@ -1,7 +1,7 @@
 import { IExecuteFunctions, ILoadOptionsFunctions, IPollFunctions, JsonObject, NodeApiError, NodeOperationError } from "n8n-workflow";
 import { OptionsWithUri } from "request";
 
-export async function portainerApiRequest(this: ILoadOptionsFunctions | IPollFunctions | IExecuteFunctions, method: string, resource: string, body: any = {}): Promise<any> { // tslint:disable-line:no-any
+export async function portainerApiRequest(this: ILoadOptionsFunctions | IPollFunctions | IExecuteFunctions, method: string, path: string, body: any = {}): Promise<any> { // tslint:disable-line:no-any
 
 	const credentials = await this.getCredentials('portainer');
 
@@ -18,7 +18,7 @@ export async function portainerApiRequest(this: ILoadOptionsFunctions | IPollFun
 		},
 		method,
 		body,
-		uri: `${BASE_URL}/${resource}`,
+		uri: `${BASE_URL}${path}`,
 		json: true,
 		useQuerystring: true,
 	};
